@@ -9,7 +9,6 @@
 /vendor/
 /public/.htaccess
 /.htaccess
-/.env
 ###< symfony/framework-bundle ###
 
 ###> phpunit/phpunit ###
