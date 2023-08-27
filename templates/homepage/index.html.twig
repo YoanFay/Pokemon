@@ -2,6 +2,26 @@
 
 {% block title %}Test{% endblock %}
 
-{% block body %}
-    <img src="{{data.sprites.front_default}}">
+{% block main %}
+    {% if ("https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/other/home/"~pokemon.nationalNumber~".png")|fileExist %}
+        <img src="https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/other/home/{{ pokemon.nationalNumber }}.png">
+    {% else %}
+        <img src="https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/{{ pokemon.nationalNumber }}.png">
+    {% endif %}
+    <p>
+        <img src="img/types/{{ types[0].type.number }}.png">
+    {% if types[1] is defined %}
+            <img src="img/types/{{ types[1].type.number }}.png">
+        </p>
+    {% endif %}
+
+    <hr>
+
+    {% for evolution in evolutions %}
+        {% if ("https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/other/home/"~evolution.EvolutionPokemon.nationalNumber~".png")|fileExist %}
+            <img src="https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/other/home/{{ evolution.EvolutionPokemon.nationalNumber }}.png">
+        {% else %}
+            <img src="https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/{{ evolution.EvolutionPokemon.nationalNumber }}.png">
+        {% endif %}
+    {%endfor%}
 {% endblock %}

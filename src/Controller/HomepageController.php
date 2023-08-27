@@ -2,6 +2,9 @@
 
 namespace App\Controller;
 
+use App\Repository\EvolutionRepository;
+use App\Repository\PokemonRepository;
+use App\Repository\PokemonTypeRepository;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
@@ -11,27 +14,23 @@ class HomepageController extends AbstractController
     /**
      * @Route("/", name="index")
      */
-    public function index(): Response
+    public function index(
+        PokemonRepository $pokemonRepository,
+        PokemonTypeRepository $pokemonTypeRepository,
+        EvolutionRepository $evolutionRepository
+    ): Response
     {
 
-        $apiUrl = 'https://pokeapi.co/api/v2/pokemon/ditto';
+        $pokemon = $pokemonRepository->findOneBy(['national_number' => rand(1, 1010)]);
 
-        $curl = curl_init($apiUrl);
+        $types = $pokemonTypeRepository->findBy(['pokemon' => $pokemon], ['slot' => 'ASC']);
 
-        curl_setopt($curl, CURLOPT_RETURNTRANSFER, true); // Récupérer la réponse dans une variable au lieu de l'afficher
-        curl_setopt($curl, CURLOPT_SSL_VERIFYPEER, false); // Ignorer la vérification SSL (attention en production)
-        $response = curl_exec($curl);
-
-        if ($response === false) {
-            echo 'Erreur cURL : '.curl_error($curl);
-        } else {
-            $data = json_decode($response, true);
-        }
-
-        curl_close($curl);
+        $evolutions = $evolutionRepository->findBy(['base_pokemon' => $pokemon]);
 
         return $this->render('homepage/index.html.twig', [
-            'data' => $data
+            'pokemon' => $pokemon,
+            'types' => $types,
+            'evolutions' => $evolutions
         ]);
     }
 }
